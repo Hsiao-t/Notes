@@ -1,0 +1,127 @@
+## 以下内容适合 pg10.0 或者以上版本
+
+## 查看所有表格记录数
+
+select relname,reltuples from pg_class where relkind='r' order by reltuples desc;
+
+## 查询表所有字段与数据类型
+
+1. 通过SQL命令
+select column_name,data_type from infomation_schema.columns where table_schema='public' and table_name='c_log';
+
+2. 通过psql命令
+\d tab_name
+
+## 产生随机字符串
+
+select md5(random()::text);
+
+## 直接查询数据库记录数
+psql -c "select relname,reltuples from pg_class where relkind='r' order by reltuples desc limit 20;" -d log
+
+## 命令行不输入密码的方法
+## 为环境变量PGPASSWORD设置值
+PGPASSWORD='user1_pass'
+psql -U user1 -d dbname
+
+## 备份数据库
+pg_dump dbname > dbname.sql
+## 不备份所有者信息
+pg_dump --no-owner dbname > dbname.sql
+
+## 恢复数据库
+pgsql -c 'create database dbname'
+pgsql -d dbname < dbname.sql
+
+## 将两个记录集合并为一个（列名相同），下列命令将t1/t2的所有行组成一个新的记录集
+select * from t1 union select * from t2;
+
+## 将两个记录集按照特定条件联接为一个
+select t1.*,t2.* from t1 join t2 on ?cond?
+
+## 为表格、视图增加注释
+comment on table t2 is '表格2';
+## 查看表格注释
+\d+
+
+## 可以通过命令编辑函数及视图定义
+-- 注意编辑完成后输入;并回车提交，有些视图如果无法修改，则可以通过修改视图、函数名称新建一个
+-- 然后删除旧的定义
+-- vi 全局替换命令是: %s/o_str/n_str/
+\ev view_name
+\ef func_name
+
+## 创建运算符
+## 运算符可以重载（即参数类型不相同）
+## 自定义运算符优先级最低，要让它优先时需要加括号
+create operator // (procedure=func,leftarg=float,rightarg=float);
+
+
+## 物化视图
+## 物化视图是保存有实际数据的视图
+## 不会自动更新、适合更新不频繁的数据
+## 创建物化视图
+create materialized view view_name as select_stmt;
+## 创建唯一性索引，并发更新时需要此索引
+create unique index index_name on view_name(field);
+## 刷新索引
+refresh materialized view concurrently view_name;
+## 修改名称
+alter materialized view name rename to new_name;
+## 授权
+grant select on view_name to role_name;
+## 查看定义
+\d+ view_name
+
+
+## 模式 Schema
+## 创建模式
+create schema s_name;
+## 授权
+grant usage on s_name to ovwx;
+## 显示模式
+\dn+
+## 查询模式下的对象
+\dt s_name.* --查询表
+\dv s_name.* --查询视图
+
+## 导出表结构
+pg_dump -s dbname -t tbl_name > tbl_name.sql
+## 从导出的表结构中创建表格，当前用户需要具有相关权限，否则应该带上-U参数
+psql -d dbname < tbl_name.sql
+
+## Pg10 分区表
+## 分区表可以将大表转化为若干小表，同时提升数据库性能。
+
+按照列范围分区
+-- 主表
+create table tb_name(
+    ...
+    cname type,
+    other col_spec
+    ...
+) partition by range(cname);
+
+表示创建基于列<cname>的范围分区表，范围格式与相应列类型一致。
+
+-- 从表
+create table tb_name_s_ra_1 partition of tb_name for values from (start) to (end);
+create table tb_name_s_ra_2 partition of tb_name for values from (start2) to (end2);
+create table tb_name_s_ra_3 partition of tb_name for values from (start3) to (end3);
+
+-- 范围是包括start，不包括end的。
+
+按照列值分区，适用于列值为离散的情况。
+-- Master table
+create table tb_name(
+    ...
+    cname type,
+    other col_spec
+    ...
+) partition by list(cname);
+
+-- Slave table
+create table tb_name_s_va_1 partition of tb_name for values in (a,b,c);
+
+-- 在postgres中 选择随机的几条数据出来，sql: 
+select * from TABLE_NAME order by random() limit N;

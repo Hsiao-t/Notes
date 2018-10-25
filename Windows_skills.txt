@@ -1,0 +1,2 @@
+1. 注册表HKLM/software/windows/current_version/run下添加启动项时，需要可执行文件全路径，即使在PATH目录内也需要
+

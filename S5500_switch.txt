@@ -4,3 +4,4 @@
 # 以下命令将端口Tx端速率限制到960Mbps
 interface <int>
   qos lr outbound cir 960000 
+

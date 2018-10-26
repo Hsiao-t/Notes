@@ -1,0 +1,44 @@
+Shell 编程
+
+# 括号
+双括号 (( expr )), 进行算术或逻辑运算,表达式（操作数）间可有空格，也可没有空格
+双中括号 [[ expr ]], 进行逻辑运算,运算符与操作数必须留空格 [[ -x /bin/su ]]
+单中括号 [ expr ], 进行逻辑运算,或者用于文件判断等，比如 [ -x /bin/su ]
+大括号${var}, 变量var的值，无歧义时使用$var
+单中括号( subshell ), 子Shell
+$(( var )) 
+
+# 几个连接符号
+&& 连接两个命令，前面的执行成功后执行后面的
+|| 连接两个命令或者操作，前面的执行失败后执行后面的
+; 连接两个命令或者操作，前面的执行后依次执行后面的，不关心命令执行结果
+
+# 命令成功或者失败以$?变量标识，如果成功则$?=0,否则$?=其它值
+
+if 控制块
+
+if statement
+then
+  command
+fi
+
+if statement; then command; fi 简化为: [[ statement ]] && command
+if [[ ! statement ]]; then command; fi 简化为: [[ statemnet ]] || command
+
+for 控制块
+
+for statemnet
+do
+  command
+done
+
+for statements; do command; done
+
+子程序
+proc_name(){
+  statements
+}
+
+运行子程序: proc_name
+
+

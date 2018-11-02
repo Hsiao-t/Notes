@@ -21,3 +21,13 @@ find ./ -mtime +1
 find ./ -name xxx 查找文件名包含xxx的文件
 find ./ -mtime -1 -exec cp -rpf {} ./newf/ \; 查找文件并复制到newf目录下
 watch -n3 "find ./ -mtime -1 | wc" 每三秒种执行一次find命令，并统计文件数目
+
+# CentOS,YUM管理系统
+## 查找释放特定文件的包:
+yum provides "*/filename"
+## 查找特定软件包释放的文件
+rpm -ql pkg_name
+## 查找软件包
+yum search pkg_name
+## 查看是否安装软件包
+rpm -qa | grep pkg_name

@@ -39,6 +39,18 @@ done
 
 for statements; do command; done
 
+case $var in
+  "value1")
+    state-1
+  ;;
+  "value2")
+    state-2
+  ;;
+  *)
+    default-statement
+  ;;
+esac
+
 子程序
 proc_name(){
   statements
@@ -53,3 +65,4 @@ proc_name(){
 
 调用传参
 proc_name a b c
+

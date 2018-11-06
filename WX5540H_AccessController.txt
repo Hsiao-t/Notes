@@ -1,0 +1,28 @@
+创建共享密码的无线网
+
+# AC配置
+wlan service-template 10
+ ssid Guest6j-7
+ vlan 146
+ akm mode psk
+ preshared-key pass-phrase cipher $c$3$1iyJU4OxCr4u+zZtFZ5Y0N/N4qbQTUhjurb4
+ cipher-suite ccmp
+ security-ie wpa
+
+# 网关设备配置
+vlan 146
+interface vlan 146
+ ip address a.b.c.d 25
+ dhcp select relay
+ dhcp relay server-address 1.1.2.2
+
+# 在AC上联口放行相关vlan
+
+# 在部署的AP下开放相关ssid
+wlan ap wtu430-bb-*-1
+ radio 1
+  service-template 10
+ radio 2
+  service-template 10
+
+# 配置尽量批量下发

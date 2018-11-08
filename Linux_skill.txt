@@ -36,3 +36,6 @@ rpm -qa | grep pkg_name
 awk 'BEGIN{} {statement;statement;statement;} END{}' filename
 BEGIN区域可以设定初始化参数，比如分割符，常见初始变量为: FS=列分隔符，NR=行（记录分隔符）
 多个分隔符用[]包括起来，如FS="[=;]"表示"="和";"都作为列分隔符
+
+# SSH 清除指定主机SSH公钥凭据
+ssh-keygen -R 1.1.6.3

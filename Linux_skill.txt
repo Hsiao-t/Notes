@@ -44,3 +44,5 @@ ssh-keygen -R 1.1.6.3
 echo StrictHostKeyChecking no > ssh.conf #自动保存公钥到 KnownHosts
 ssh -F ssh.conf root@a.b.c.d
 
+## 清除Key文件密码
+ssh-keygen -p 并输入旧密码，新密码留空

@@ -46,3 +46,20 @@ ssh -F ssh.conf root@a.b.c.d
 
 ## 清除Key文件密码
 ssh-keygen -p 并输入旧密码，新密码留空
+
+# Socat - Socket CAT, Socket双向数据连接
+基础用法: socat [opt] <addr> <addr> # 在指定的两个数据通道上建立连接
+基础原理为：
+a) 先启动第一个连接，成功后再启动第二个连接。 
+b) 两个连接均启动成功后，如果有数据则进行双向交换
+
+## 端口转发: 监听LocalAddr:12345端口，并将请求转发到1.1.1.1:12345上
+## $ socat tcp4-listen:12345,bind=LocalAddr,reuseaddr,fork tcp:1.1.1.1:12345
+选项：
+bind=LocalAddr, 指定绑定的本地地址
+reuseaddr, 指定地址重用（必须明确指定IP地址，才可以使用reuseaddr，主要避免端口未完全关闭导致的监听失败）
+fork, 建立子程序处理链入请求，不然处理一个请求后程序就退出去了。
+
+## $socat tcp4-listen:12345 tcp-listen:23456
+先监听端口12345，如果有传入连接，再启动监听23456。
+

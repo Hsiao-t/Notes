@@ -1,0 +1,25 @@
+# H3C IPv6技术
+
+## IPv6主机访问IPv4服务器
+
+interface IPv4Side #IPv4侧接口
+ aft enable #启动地址转换功能
+
+interface IPv6Side #IPv6侧接口
+ aft enable
+
+aft v4tov6 source 1.1.1.1 2001:1fff::1 #将1.1.1.1转换为2001:1fff::1
+aft v6tov4 source acl ipv6 name any Interface LOOPBACK0 #将所有需要访问IPv4服务器的终端均转换为LOOPBACK0的地址
+
+注：
+a) 命令中的 Source 或者 Destination 不是数据流向，而是根据v4tov6或者v6tov4的字面意义解。v4tov6的source就是把指定v4地址转换为v6地址，v6tov4 source则是将指定的v6地址转换为v4地址。
+b) v4/v6间的相互访问是双向的，因此需要双向均配置转换
+c) 一般而言，发起连接的一端进行动态转换，服务器的那端进行静态转换或者前缀转换
+
+## 关于日志记录问题
+a) IPv6 Aft 日志记录好象无效，可以使用会话记录代替
+b) 启用会话记录: 
+*) 全局模式下启用会话日志: session log flow-begin
+*) 在具体端口下启用相应的日志记录: session log enable ipv6 inbound
+*) 将日志转换为syslog，userlog flow syslog
+c) H3C F5020, comware v710,r9320 记录会话日志到会话缓冲区时，使用了独立的缓冲区，要使用: display logbuffer module Session 查看，更老的版本可能没有独立缓冲区，保持不变。当时就是因为不知道，以为没有输出日志

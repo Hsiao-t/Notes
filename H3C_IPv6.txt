@@ -18,6 +18,8 @@ c) 一般而言，发起连接的一端进行动态转换，服务器的那端�
 
 ## 关于日志记录问题
 a) IPv6 Aft 日志记录好象无效，可以使用会话记录代替
+*) 注: aft log 要配置了port-block-size后才生效，即
+*) aft v6tov4 source acl ipv6 name any address-group 0 port-block-size 200
 b) 启用会话记录: 
 *) 全局模式下启用会话日志: session log flow-begin
 *) 在具体端口下启用相应的日志记录: session log enable ipv6 inbound

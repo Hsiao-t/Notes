@@ -1,0 +1,22 @@
+﻿Git 远程提交代码
+1. 在Github上创建一个账户
+2. 在Github上创建一个Project,记录项目地址如下
+--> https://username@github.com/username/project.git
+3. 初始化本地仓库
+cd project
+git init
+git add *.*
+git commit -m "Description..."
+git remote add origin https://username@github.com/username/proj.git
+git pull --rebase origin master #重建本地仓库
+git push -u orgin master
+
+Git 命令
+git status #查看状态
+git branch dev #创建dev分支
+git checkout dev #切换到dev分支
+git checkout master #切换回master分支
+git merge dev #将dev分支合并到master分支
+git revert commit_id #回滚到指定版本。
+
+git config --global credential.helper store #保存凭据

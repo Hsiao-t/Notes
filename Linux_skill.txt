@@ -63,3 +63,17 @@ fork, 建立子程序处理链入请求，不然处理一个请求后程序就�
 ## $socat tcp4-listen:12345 tcp-listen:23456
 先监听端口12345，如果有传入连接，再启动监听23456。
 
+## 在编译过程中出现"config.status: error: connot find input file:..."这种错误时，使用以下命令序列生成所需文件
+aclocal 
+libtoolize –force 
+automake –add-missing 
+autoconf 
+autoheader 
+make clean
+
+## SSH使用证书登录
+1. 生成密钥对文件，默认为id_rsa, id_rsa.pub，命令行: ssh-keygen -b1024 -t rsa
+2. 将id_rsa.pub(公钥文件)内容追加到 ~/.ssh/authorized_keys 文件中,其中~为需要登录用户的HomeDir
+3. chmod u-w authorized_keys
+4. 服务端使用 ssh user@server_name 登录
+P.S. a)可以多个服务器均使用一个密钥对登录，但不建议。b)如果使用的私钥文件不是id_rsa，需要手动指定，命令为: ssh -i file.key user@server_name

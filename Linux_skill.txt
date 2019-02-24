@@ -77,3 +77,22 @@ make clean
 3. chmod u-w authorized_keys
 4. 服务端使用 ssh user@server_name 登录
 P.S. a)可以多个服务器均使用一个密钥对登录，但不建议。b)如果使用的私钥文件不是id_rsa，需要手动指定，命令为: ssh -i file.key user@server_name
+
+## vi 将dos格式文件转换为*nix格式
+:set ff=unix
+注，dos格式文件在打开时会在底栏显示[dos]字样
+
+## 在线编辑程序Sed
+直接修改文件: sed -i command filename
+流式修改文件: sed cmd file
+关于命令：
+1) 删除包含指定内容的行: '/search_word/d'
+2) 将包含指定内容的行修改为新的内容: '/search/c new_word'
+3) 搜索指定内容，并在当前行插入一行: '/search/i inserted_word'
+4) 搜索指定内容，并在当前行后添加新内容: '/search/a new'
+4) 删除指定行号的内容: '2,5d'
+5) 将指定行修改为新的内容: '2,5c new'
+6) 在文件尾添加内容: '$a new'
+7) 搜索内容并将搜索到的内容替换为新的内容: 's/old/new/g' g代表全局替换
+注：2)与7)的不同之处是2)是将指定行修改为新的内容，7)是只将搜索到的内容替换为新的内容
+

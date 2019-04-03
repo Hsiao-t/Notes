@@ -125,3 +125,13 @@ create table tb_name_s_va_1 partition of tb_name for values in (a,b,c);
 
 -- 在postgres中 选择随机的几条数据出来，sql: 
 select * from TABLE_NAME order by random() limit N;
+
+## with 子句
+用于提高复杂查询的可读性
+with tb_name as (
+  select col_spec,.... from .....
+),
+tb2 as (
+ select .... from ....
+)
+select col1,col2,col3 from tb1, tb2 where ....;

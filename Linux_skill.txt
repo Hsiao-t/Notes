@@ -94,5 +94,20 @@ P.S. a)可以多个服务器均使用一个密钥对登录，但不建议。b)�
 5) 将指定行修改为新的内容: '2,5c new'
 6) 在文件尾添加内容: '$a new'
 7) 搜索内容并将搜索到的内容替换为新的内容: 's/old/new/g' g代表全局替换
+8) 删除空行: '/^[[:space:]]*$/d'
 注：2)与7)的不同之处是2)是将指定行修改为新的内容，7)是只将搜索到的内容替换为新的内容
 
+9) 正则替换及子匹配： echo "Hello,12345" | sed -e 's/Hello,\(.*\)/\1/', 这个指令的意思是：搜索模式Hello,(.*),并将搜索到的模式替换成匹配的第一组子串（即用第一个括号括起的内容，本处为12345）
+
+## 大小写转换: 
+1) echo 'Asdf' | tr [:lower:] [:upper:]
+2) echo 'Asdf' | tr a-z A-Z
+3) echo 'Asdf' | sed 's/[a-z]/\U&/g' 转大写，注使用大写的U表示转全文，小写的u转首字
+4) echo 'ASDF' | sed 's/[A-Z]/\L&/g' 转换小写
+
+## 关于Shell里面的正则表达式
+ERE(扩展正则):
+BRE(基本正则): 七个元字符{}()|?+需要转义才代表特殊含义，而扩展正则不需要转义就代表特殊含义
+vi,sed,grep 使用BRE正则
+awk,egrep 使用扩展正则
+ref: http://www.4e00.com/blog/linux/2016/01/21/posix-bre-and-ere-regular-expression.html

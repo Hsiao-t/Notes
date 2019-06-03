@@ -135,3 +135,16 @@ tb2 as (
  select .... from ....
 )
 select col1,col2,col3 from tb1, tb2 where ....;
+
+-- 交叉表
+# 定义交叉表查询列(b列)为: s_col
+# 定义交叉表分组列(a列): g_col
+# 定义数据列: d_col
+select g_col,
+ sum(case when s_col = 'a' then d_col else 0 end) as a,
+ sum(case when s_col = 'b' then d_col else 0 end) as b,
+ sum(case when s_col = 'c' then d_col else 0 end) as c
+from s_tbl group by g_col;
+
+这会产生一个g_col值为index, column=[a,b,c]的交叉表
+

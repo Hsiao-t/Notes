@@ -8,8 +8,10 @@ git init
 git add *.*
 git commit -m "Description..."
 git remote add origin https://username@github.com/username/proj.git
+git remote add rs ssh://git@github.com/username/proj.git
 git pull --rebase origin master #重建本地仓库
 git push -u orgin master
+# SSH 方式需要在当前用户".ssh"目录下放与远端Github相对应的密钥文件
 
 Git 命令
 git status #查看状态

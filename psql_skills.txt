@@ -148,3 +148,29 @@ from s_tbl group by g_col;
 
 这会产生一个g_col值为index, column=[a,b,c]的交叉表
 
+-- Extract 解析时间与日期数据
+select Extract(field from timestamp)::int;
+其中，field可以是:
+1) min: 时间中的分钟数
+2) sec: 时间中的秒数
+3) hour: 时间中的小时数
+4) year: 年数
+5) doy: 一年中的天数
+6) dow: 一周中的天数
+7) day: 一月中的天数
+8) ....不常用的忽略
+
+-- PostgreSQL percentile_cont窗口函数
+select percentile_cont(frac) within group (order by column [desc]) from table group by ....
+说明: percentile_cont(frac) within group (order by ...) 是一种整体表达法，frac为百分位，order by 是需要处理的数据列，后面group by为分组依据
+
+-- PostgreSQL 用户和组
+create role role_stk; #这是一个角色，不能登录
+create user user_stk; #这是一个用户，可以登录
+grant select on tbl_set1 to role_stk;
+grant select on tbl_set2 to role_stk;
+grant select on tbl_set3 to role_stk; #将一系列权限授予角色
+grant role_stk to user_stk; #为这个用户添加角色，这个用户就具有角色的权限
+
+-- PostgreSQL 查看剩余连接数
+select max_conn-now_conn as resi_conn from (select setting::int8 as max_conn,(select count(*) from pg_stat_activity) as now_conn from pg_settings where name = 'max_connections') t;

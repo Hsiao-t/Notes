@@ -107,7 +107,67 @@ P.S. a)可以多个服务器均使用一个密钥对登录，但不建议。b)�
 
 ## 关于Shell里面的正则表达式
 ERE(扩展正则):
-BRE(基本正则): 七个元字符{}()|?+需要转义才代表特殊含义，而扩展正则不需要转义就代表特殊含义
+BRE(基本正则): 七个元字符{}()|?+需要转义才代表特殊含义，而扩展正则不需要转义就代表特殊含义，BRE没有诸如\d,\s这样的字符集，取而代之的是：[:space:]-空白字符，[:alnum:]-字母+数字，[:alpha:]-字符，[:blank:]-空白+制表符，[:lower:][:upper:]小写、大写，[:punct:]标点符号，[:digit:]-数字
 vi,sed,grep 使用BRE正则
 awk,egrep 使用扩展正则
 ref: http://www.4e00.com/blog/linux/2016/01/21/posix-bre-and-ere-regular-expression.html
+
+##清除CACHE空间
+sync
+echo 1 > /proc/sys/vm/drop_caches
+
+##清理SWAP空间
+swapoff -a
+swapon -a
+
+##ps命令
+显示特定列并按照指定列排序
+ps -e -o pid,comm=,wchan,trs,drs,vsz,rss --sort=-vsz
+ps ax o pid,%cpu,%mem,psr,trs,drs,vsz,rss,cmd k -vsz
+-o 列表
+pid: 进程号
+comm=: 命令行
+wchan: 等待链，运行中的程序用"-"标识，多线程程序用"*"标识
+trs: 进程代码空间占用的内存数量
+drs: 进程数据空间占用的内存数量，drs == vsz - trs
+vsz: 进程申请的内存数量（不代表实际占用的数量）
+rss: 进程实际占用的内存数量
+%mem: 内存百分比
+%cpu: cpu百分比
+
+--sort=[+-]%cpu, 按照cpu使用排序，+为升序，-为降序
+
+## 查看系统中谁的IO大
+1. 关闭系统日志: service rsyslog stop
+2. 开启块记录: echo 1 > /proc/sys/vm/block_dump
+3. 检查系统IO块情况: dmesg | egrep "READ|WRITE|dirtied"，会出现诸如以下日志：
+postmaster(13648): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13649): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13650): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13651): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13652): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13653): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13654): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13655): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13656): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+postmaster(13657): WRITE block 108389744 on unknown-block(253,2) (16 sectors)
+进行统计之后就知道哪个程序写得比较多了。
+统计命令: dmesg | egrep "READ|WRITE|dirtied" | awk -F: '{print $1}'|sort|uniq -c|sort -rn|head -n 10
+4. 完成后关闭块记录: echo 0 > /proc/sys/vm/block_dump 并打开系统日志: service rsyslog start
+
+## 磁盘性能测试
+dd if=/dev/zero of=~/disk-test count=4k bs=64k conv=fdatasync #使用写缓存，最后落盘
+df if=/dev/zero of=~/disk-test count=4k bs=64k oflag=dsync #写每一块都落盘，不使用写缓存，相当于严格测试，测出来速度也非常低
+
+## CentOS 7 以后防火墙
+systemctl status firewalld
+systemctl enable firewalld
+systemctl unmask/mask firewalld #MASK了以后就无法再进行启动
+systemctl start firewalld
+
+firewall-cmd --add-port=22/tcp #允许一个端口经过防火墙，立即生效（不保存配置文件）
+firewall-cmd --add-port=22/tcp --permanent #允许一个端口经过防火墙，重新装载后生效（保存配置文件）
+firewall-cmd --list-* #列出防火墙运行中的规则，*可以是ports, sources, rich-rules等
+firewall-cmd --zone=public --add-rich-rule="rule family='ipv4' source address='$IP' port port=22 protocol=tcp drop" #禁止一个IP地址访问特定端口，可以用drop，可以用reject
+
+
